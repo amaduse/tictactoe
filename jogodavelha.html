@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        td {
+            width: 33.33%;
+            height: 100px;
+            border: 1px solid #ccc;
+            text-align: center;
+            font-size: 3em;
+            vertical-align: middle;
+        }
+
+        td:hover {
+            background-color: #EA0D0D;
+            cursor: pointer;
+        }
+      .x {
+            color: red;
+        }
+      .o {
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <table id="board">
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    <button onclick="resetBoard()">Reset</button>
+    <div id="winner"></div>
+    <script>
+        const board = document.getElementById('board');
+        const winnerDiv = document.getElementById('winner');
+        let currentPlayer = 'x';
+        let gameOver = false;
+
+        function markCell(event) {
+            if (gameOver) return;
+            const cell = event.target;
+            if (cell.textContent!== '') return;
+            cell.textContent = currentPlayer;
+            cell.classList.add(currentPlayer);
+            checkWin(currentPlayer);
+            currentPlayer = currentPlayer === 'x'? 'o' : 'x';
+        }
+
+        function checkWin(player) {
+            const cells = Array.from(board.getElementsByTagName('td'));
+            const wins = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+                [0, 4, 8], [2, 4, 6] // diagonals
+            ];
+            for (const win of wins) {
+                if (cells[win[0]].textContent === player &&
+                    cells[win[1]].textContent === player &&
+                    cells[win[2]].textContent === player) {
+                    gameOver = true;
+                    winnerDiv.textContent = `${player} venceu!`;
+                    return;
+                }
+            }
+            if (!cells.some(cell => cell.textContent === '')) {
+                gameOver = true;
+                winnerDiv.textContent = 'Empate!';
+            }
+        }
+
+        function resetBoard() {
+            gameOver = false;
+            currentPlayer = 'x';
+            const cells = Array.from(board.getElementsByTagName('td'));
+            for (const cell of cells) {
+                cell.textContent = '';
+                cell.classList.remove('x', 'o');
+            }
+            winnerDiv.textContent = '';
+        }
+
+        board.addEventListener('click', markCell);
+    </script>
+</body>
+</html>
